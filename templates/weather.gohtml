@@ -55,13 +55,13 @@ img {
     <a href="/">Home</a>
   </div>
   <div class="w3-display-middle">
-    <h1 style="text-align: center; font-size: 100px;">{{$temperature}}*C</h1>
+    <h1 style="text-align: center; font-size: 100px;">{{$temperature}}&#176;C</h1>
     <hr class="w3-border-grey" style="margin:auto;width:60%">
-    <p class="w3-large w3-center">{{$name}}</p>
+    <p class="w3-large w3-center"><font size="+3">{{$name}}</font></p>
     <table cellpadding="20">
         <tr>
             <th>Overall</th>
-            <th>Time</th>
+            <th>Date and Time</th>
             <th>Pressure</th>
             <th>Humidity</th>
             <th>Sunrise</th>
@@ -70,7 +70,7 @@ img {
         <tr>
             <th>{{$overall}}</th>
             <th>{{$time}}</th>
-            <th>{{$pressure}}hPa</th>
+            <th>{{$pressure}} hPa</th>
             <th>{{$humidity}}%</th>
             <th>{{$sunrise}}</th>
             <th>{{$sunset}}</th>

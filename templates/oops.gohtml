@@ -41,6 +41,7 @@ img {
 
 </style>
 <body>
+{{$oops:=.RedirectURL}}
 
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
   <div class="w3-display-topleft w3-padding-large w3-xlarge">
@@ -49,7 +50,11 @@ img {
   <div class="w3-display-middle">
     <h1 style="text-align: center; font-size: 100px;">OOPS</h1>
     <hr class="w3-border-grey" style="margin:auto;width:60%">
-    <p class="w3-large w3-center">Unfortunately openweather services got to many requests <br>and were unable to process ours.<br> Try refreshing the page.</p>
+    <p class="w3-large w3-center">Unfortunately openweather services got to many requests <br>and were unable to process ours.<br> Try repeating Your request
+    <br>by clicking <a href={{$oops}}>HERE</a>.
+    <br>If there is no luck after few times
+    <br>check the searched phrase.
+    <br>Maybe it is misspelled.</p>
 
 </div>
 

@@ -26,3 +26,7 @@ type WeatherTemplateData struct {
 	Sunrise     string
 	Sunset      string
 }
+
+type OopsTemplateData struct {
+	RedirectURL string
+}

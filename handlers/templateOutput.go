@@ -18,8 +18,17 @@ func WeatherPageHandler(ctx *fasthttp.RequestCtx) {
 
 	resp, err := http.Get(fmt.Sprintf("http://localhost:8080/weather/checkcity/%s", ctx.UserValue("cityname")))
 	if err != nil {
-		ctx.Response.SetStatusCode(http.StatusBadRequest)
-		ctx.Response.AppendBodyString("check the spelling and if \n it's correct then try again")
+		ctx.Response.SetStatusCode(500)
+		ctx.Response.SetStatusCode(http.StatusInternalServerError)
+		return
+	}
+	if resp.StatusCode != 200 {
+		oopsData := models.OopsTemplateData{
+			RedirectURL: fmt.Sprintf("/weather/%s", ctx.UserValue("cityname")),
+		}
+		tpl := template.Must(template.ParseFiles("templates/oops.gohtml"))
+		ctx.SetContentType("text/html")
+		tpl.Execute(ctx, oopsData)
 		return
 	}
 	body, err := ioutil.ReadAll(resp.Body)
@@ -36,7 +45,7 @@ func WeatherPageHandler(ctx *fasthttp.RequestCtx) {
 		return
 	}
 
-	name := strings.Replace(fmt.Sprintf("%s", ctx.UserValue("cityname")), "%20", " ", -1)
+	name := strings.ToUpper(strings.Replace(fmt.Sprintf("%s", ctx.UserValue("cityname")), "%20", " ", -1))
 
 	templateData := models.WeatherTemplateData{
 		Name:        name,
@@ -45,8 +54,8 @@ func WeatherPageHandler(ctx *fasthttp.RequestCtx) {
 		Time:        timestampToString(bodyStr.CurrentTime, bodyStr.TimeOffset),
 		Pressure:    bodyStr.Pressure,
 		Humidity:    bodyStr.Humidity,
-		Sunrise:     timestampToString(bodyStr.Sunrise, bodyStr.TimeOffset),
-		Sunset:      timestampToString(bodyStr.Sunset, bodyStr.TimeOffset),
+		Sunrise:     strings.Split(timestampToString(bodyStr.Sunrise, bodyStr.TimeOffset), "\n")[1],
+		Sunset:      strings.Split(timestampToString(bodyStr.Sunset, bodyStr.TimeOffset), "\n")[1],
 	}
 	tpl := template.Must(template.ParseFiles("templates/weather.gohtml"))
 	ctx.SetContentType("text/html")

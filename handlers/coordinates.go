@@ -79,7 +79,6 @@ func getCoordinates(searchText string) (lat, lon string, status int, err error) 
 
 func byteArrayToFloat(bytes []byte) (result float32, err error) {
 	strByte := string(bytes)
-	fmt.Println(strByte)
 	var i int
 	for i = 0; i < len(strByte); i++ {
 		if strByte[i] == '.' {
