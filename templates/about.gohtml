@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<title>About</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+
+    <!--css-->
+    
+body,h1 {font-family: "Raleway", sans-serif}
+body, html {height: 100%}
+img {
+  width:300px; /* or whatever */
+  height:160px; /* or whatever */
+}
+.bgimg {
+  background-image: url('http://localhost:8081/images/forestbridge.jpg');
+  min-height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+
+.zoom {
+  padding: 50px;
+  background-color: none;
+  transition: transform .2s; /* Animation */
+  width: 350px;
+  height: 207px;
+  margin: auto;
+}
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.zoom:hover {
+  transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+
+
+</style>
+<body>
+  {{$back:=.Back}}
+
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+  <div class="w3-display-topleft w3-padding-large w3-xlarge">
+    <a href="/">{{$back}}</a>
+  </div>
+  <div class="w3-display-middle">
+    <h1 class="w3-jumbo w3-animate-top">WEATHER CHECKER</h1>
+    <hr class="w3-border-grey" style="margin:auto;width:40%">
+    <p class="w3-large w3-center">Weather app made by Jan Walczak.<br>
+        Built using GoLang for back-end and just HTML for front.<br>
+        Hopefully it's not that terrible.<br>
+        At least when it comes to Go.<br>
+        Cause I don't really like front-end ;).</p>
+  </div>
+  <div class="w3-display-bottomleft w3-padding-large">
+    Powered by geocode.xyz and openweathermap.org
+  </div>
+
+</div>
+
+</body>
+</html>

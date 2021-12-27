@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<title>Index</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+
+    <!--css-->
+    
+body,h1 {font-family: "Raleway", sans-serif}
+body, html {height: 100%}
+img {
+  width:300px; /* or whatever */
+  height:160px; /* or whatever */
+}
+.bgimg {
+  background-image: url('http://localhost:8081/images/forestbridge.jpg');
+  min-height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+
+.zoom {
+  padding: 50px;
+  background-color: none;
+  transition: transform .2s; /* Animation */
+  width: 350px;
+  height: 207px;
+  margin: auto;
+}
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+.btnSearch {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.zoom:hover {
+  transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+<script>
+function search()
+{
+var searchInput = document.getElementById('search').text();
+var url = "http://localhost:8080/weather/" + searchInput;
+location.replace(url)
+}
+</script>
+var button = document.getElementById("btnSearch");
+
+button.onclick = function () {
+    var text = document.getElementById("textBoxEl").value;
+    window.open("http://monkey=" + text);
+}
+
+</style>
+<body>
+
+
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+  <div class="w3-display-topleft w3-padding-large w3-xlarge">
+    <a href="/about">About</a>
+  </div>
+  <div class="w3-display-middle">
+    <h1 class="w3-jumbo w3-animate-top" >WEATHER CHECKER</h1>
+    <hr class="w3-border-grey" style="margin:auto;width:40%">
+    <p class="w3-large w3-center">Check current weather<br>in biggest cities<br>around the globe</p>
+    <p class="w3-large w3-center">
+
+<input type="text" id="txtSearch"/>
+<button onclick="search()" id="btnSearch">
+<a onclick='window.location.href="http://localhost:8080/weather/"+document.getElementById("txtSearch").value;';>
+Search
+</a>
+</button>
+
+    </p>
+  </div>
+  <div class="w3-display-bottomleft w3-padding-large">
+    Powered by geocode.xyz and openweathermap.org
+  </div>
+
+  <div style="position: fixed; bottom: 10%; left: 21%">
+    <table>
+    <tr>
+        <th><button style="border:none; background-color: transparent;" class="zoom"><a href="http://localhost:8080/weather/new%20york"><img src="http://localhost:8081/images/newyork.jpg"/></a></button></th>
+        <th><button style="border:none; background-color: transparent;" class="zoom"><a href="http://localhost:8080/weather/tokyo"><img src="http://localhost:8081/images/tokio.jpg"/></a></button></th>
+        <th><button style="border:none; background-color: transparent;" class="zoom"><a href="http://localhost:8080/weather/moscow"><img src="http://localhost:8081/images/moscow.jpg"/></a></button></th>
+    </tr>
+</table>
+</div>
+
+</div>
+
+</body>
+</html>
