@@ -33,14 +33,12 @@ func WeatherPageHandler(ctx *fasthttp.RequestCtx) {
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		ctx.Response.SetStatusCode(500)
 		ctx.Response.SetStatusCode(http.StatusInternalServerError)
 		return
 	}
 	bodyStr := models.Weather{}
 	err = json.Unmarshal(body, &bodyStr)
 	if err != nil {
-		ctx.Response.SetStatusCode(500)
 		ctx.Response.SetStatusCode(http.StatusInternalServerError)
 		return
 	}
@@ -73,7 +71,7 @@ func determineOverall(data models.Weather) (overall string) {
 					case data.Humidity > 90.0:
 						overall = "Cold, possible rain"
 					default:
-						overall = "Cold and sunny"
+						overall = "Cold and the sky is clear"
 					}
 
 				}
@@ -100,7 +98,7 @@ func determineOverall(data models.Weather) (overall string) {
 					case data.Humidity > 90.0:
 						overall = "Cool, possible rain"
 					default:
-						overall = "Cool and sunny"
+						overall = "Cool and the sky is clear"
 					}
 
 				}
@@ -126,7 +124,7 @@ func determineOverall(data models.Weather) (overall string) {
 					case data.Humidity > 90.0:
 						overall = "Warm, possible rain"
 					default:
-						overall = "Warm and sunny"
+						overall = "Warm and the sky is clear"
 					}
 
 				}
@@ -153,7 +151,7 @@ func determineOverall(data models.Weather) (overall string) {
 					case data.Humidity > 90.0:
 						overall = "Hot, possible rain"
 					default:
-						overall = "Hot and sunny"
+						overall = "Hot and the sky is clear"
 					}
 
 				}

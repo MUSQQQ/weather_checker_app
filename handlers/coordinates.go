@@ -22,21 +22,14 @@ import (
 func CoordinatesHandler(ctx *fasthttp.RequestCtx) {
 
 	lon, lat, status, err := getCoordinates(fmt.Sprintf("%s", ctx.UserValue("cityname")))
-	if err != nil {
+	if err != nil || status >= 500 || (lat == "" && lon == "") {
 		ctx.Response.SetStatusCode(500)
 		return
 	}
-	if status >= 500 {
-		ctx.Response.SetStatusCode(500)
-		return
+	coords := models.Coordinates{
+		Lat: lat,
+		Lon: lon,
 	}
-	if lat == "" && lon == "" {
-		ctx.Response.SetStatusCode(500)
-		return
-	}
-	coords := models.Coordinates{}
-	coords.Lat = lat
-	coords.Lon = lon
 
 	resp, err := json.Marshal(coords)
 	if err != nil {
@@ -82,7 +75,8 @@ func getCoordinates(searchText string) (lat, lon string, status int, err error) 
 		return "", "", status, nil
 	}
 	if status != 200 {
-		log.Printf("status not OK in geocoding response")
+		log.Printf("status not OK in geocoding response:")
+		log.Printf(string(geocodingRequest))
 		return "", "", status, nil
 	}
 
@@ -101,6 +95,9 @@ func getCoordinates(searchText string) (lat, lon string, status int, err error) 
 
 	toInsert := models.MongoDBCoordinates{Name: name, Lat: latt, Lon: longt}
 	_, err = collection.InsertOne(ctx, toInsert)
+	if err != nil {
+		log.Print(err.Error())
+	}
 
 	return longt, latt, 200, nil
 }

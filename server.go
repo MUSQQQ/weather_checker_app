@@ -9,11 +9,10 @@ import (
 
 	"github.com/fasthttp/router"
 	"github.com/valyala/fasthttp"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var collection *mongo.Collection
-
+//TODO
+// zmienic rozpoznwanie pogody zeby nie mowilo 'sunny' tylko 'clear sky' lub 'no clouds'
 func main() {
 
 	go func() {

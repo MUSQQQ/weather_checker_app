@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"time"
 	"weather_checker/models"
 
@@ -16,22 +17,14 @@ func MainWeatherHandler(ctx *fasthttp.RequestCtx) {
 	//https://api.weather.gov/points/
 
 	longt, latt, status, err := getCoordinates(fmt.Sprintf("%s", ctx.UserValue("cityname")))
-	if err != nil {
-		ctx.Response.SetStatusCode(500)
-		return
-	}
-	if status >= 500 {
-		ctx.Response.SetStatusCode(500)
-		return
-	}
-	if latt == "" && longt == "" {
-		ctx.Response.SetStatusCode(500)
+	if err != nil || status >= 500 || latt == "" && longt == "" {
+		ctx.Response.SetStatusCode(http.StatusInternalServerError)
 		return
 	}
 
 	temp, pressure, humidity, clouds, currentTime, sunrise, sunset, offset, status, err := getWeatherData(latt, longt)
 	if err != nil || status != 200 {
-		ctx.Response.SetStatusCode(500)
+		ctx.Response.SetStatusCode(http.StatusInternalServerError)
 		return
 	}
 

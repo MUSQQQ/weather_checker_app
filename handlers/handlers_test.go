@@ -57,7 +57,7 @@ func TestDetermineOverall(t *testing.T) {
 				Humidity:    80,
 				Clouds:      20,
 			},
-			"Hot and sunny",
+			"Hot and the sky is clear",
 		},
 		{
 			models.Weather{
