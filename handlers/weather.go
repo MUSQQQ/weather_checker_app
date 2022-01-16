@@ -10,10 +10,9 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-const openWeatherURL = "https://api.openweathermap.org/data/2.5/onecall"
-
-// /weather/checkcity/:cityname
+// "/weather/checkcity/:cityname"
 func MainWeatherHandler(ctx *fasthttp.RequestCtx) {
+
 	//https://api.weather.gov/points/
 
 	longt, latt, status, err := getCoordinates(fmt.Sprintf("%s", ctx.UserValue("cityname")))

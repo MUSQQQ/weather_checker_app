@@ -1,15 +1,21 @@
 package main
 
 import (
-	"github.com/fasthttp/router"
-	"github.com/valyala/fasthttp"
 	"html/template"
 	"log"
 	"net/http"
+
 	"weather_checker/handlers"
+
+	"github.com/fasthttp/router"
+	"github.com/valyala/fasthttp"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
+var collection *mongo.Collection
+
 func main() {
+
 	go func() {
 		http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("images"))))
 		http.HandleFunc("/", Index)
@@ -26,7 +32,6 @@ func main() {
 	r.GET("/weather/{cityname}", handlers.WeatherPageHandler)
 
 	log.Fatal(fasthttp.ListenAndServe(":8080", r.Handler))
-
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {

@@ -6,15 +6,21 @@ import (
 	"log"
 	"math"
 	"strconv"
+	"strings"
+	"time"
 	"weather_checker/models"
 
-	"github.com/valyala/fasthttp"
-)
+	"context"
 
-const geocodeURL = "https://geocode.xyz/?json=1&scantext="
+	"github.com/valyala/fasthttp"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
 
 // "/coordinates/:cityname"
 func CoordinatesHandler(ctx *fasthttp.RequestCtx) {
+
 	lon, lat, status, err := getCoordinates(fmt.Sprintf("%s", ctx.UserValue("cityname")))
 	if err != nil {
 		ctx.Response.SetStatusCode(500)
@@ -37,17 +43,36 @@ func CoordinatesHandler(ctx *fasthttp.RequestCtx) {
 		ctx.Response.SetStatusCode(500)
 		return
 	}
+
 	ctx.Response.SetStatusCode(200)
 	ctx.SetContentType("application/json")
 	ctx.Response.SetBody(resp)
 }
 
 func getCoordinates(searchText string) (lat, lon string, status int, err error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	if err != nil {
+		fmt.Println("mongo.Connect() ERROR:", err)
+	}
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			panic(err)
+		}
+	}()
+	collection := client.Database("weather").Collection("cities")
+	name := strings.ToLower(strings.Replace(searchText, "%20", "", -1))
+	filter := bson.D{{"name", name}}
+	result := models.MongoDBCoordinates{}
+	err = collection.FindOne(ctx, filter).Decode(&result)
+	if err == nil {
+		return result.Lon, result.Lat, 200, nil
+	}
+
 	var geocodingRequest []byte
 	URI := geocodeURL + searchText
-
 	status, geocodingRequest, err = fasthttp.Get(geocodingRequest, URI)
-
 	if err != nil {
 		log.Printf("error while requesting coordinates from geocoding")
 		return "", "", status, err
@@ -73,6 +98,9 @@ func getCoordinates(searchText string) (lat, lon string, status int, err error) 
 	latt := string(unmarshaledMap["latt"][1:])
 	longt = longt[:len(longt)-1]
 	latt = latt[:len(latt)-1]
+
+	toInsert := models.MongoDBCoordinates{Name: name, Lat: latt, Lon: longt}
+	_, err = collection.InsertOne(ctx, toInsert)
 
 	return longt, latt, 200, nil
 }
@@ -100,13 +128,13 @@ func byteArrayToFloat(bytes []byte) (result float32, err error) {
 		mantissaPart = 0
 
 	} else {
-		mantissaPart, err = strconv.Atoi(strByte[i+1 : len(strByte)-1])
+		mantissaPart, err = strconv.Atoi(strByte[i+1:])
 	}
 
 	if err != nil {
 		log.Printf("error while converting: %s", err)
 		return -1, err
 	}
-	result = float32(intResultPart) + float32(mantissaPart)/(float32(math.Pow10(i+2)))
+	result = float32(intResultPart) + float32(mantissaPart)/(float32(math.Pow10(len(strByte)-i-1)))
 	return result, nil
 }

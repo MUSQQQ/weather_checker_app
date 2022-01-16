@@ -13,10 +13,10 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-// /weather/:cityname
+// "/weather/:cityname"
 func WeatherPageHandler(ctx *fasthttp.RequestCtx) {
 
-	resp, err := http.Get(fmt.Sprintf("http://localhost:8080/weather/checkcity/%s", ctx.UserValue("cityname")))
+	resp, err := http.Get(fmt.Sprintf(internalWeatherJSONEndpoint, ctx.UserValue("cityname")))
 	if err != nil {
 		ctx.Response.SetStatusCode(500)
 		ctx.Response.SetStatusCode(http.StatusInternalServerError)

@@ -11,9 +11,26 @@
     
 body,h1 {font-family: "Raleway", sans-serif}
 body, html {height: 100%}
+@media screen and (min-width: 1700px) {
 img {
   width:300px; /* or whatever */
   height:160px; /* or whatever */
+  float: center;
+}
+}
+@media screen and (max-width: 1699px) {
+img {
+  width:0px;
+  height:0px;
+  float: center;
+}
+}
+@media screen and (max-height: 899px) {
+img {
+  width:0px;
+  height:0px;
+  float: center;
+}
 }
 .bgimg {
   background-image: url('http://localhost:8081/images/forestbridge.jpg');
@@ -82,15 +99,15 @@ Search
     </p>
   </div>
   <div class="w3-display-bottomleft w3-padding-large">
-    Powered by geocode.xyz and openweathermap.org
+    Powered by <a href="https://geocode.xyz">geocode.xyz</a> and <a href="https://openweathermap.org">openweathermap.org</a>
   </div>
 
   <div style="position: fixed; bottom: 10%; left: 21%">
     <table>
     <tr>
-        <th><button style="border:none; background-color: transparent;" class="zoom"><a href="http://localhost:8080/weather/new%20york"><img src="http://localhost:8081/images/newyork.jpg"/></a></button></th>
-        <th><button style="border:none; background-color: transparent;" class="zoom"><a href="http://localhost:8080/weather/tokyo"><img src="http://localhost:8081/images/tokio.jpg"/></a></button></th>
-        <th><button style="border:none; background-color: transparent;" class="zoom"><a href="http://localhost:8080/weather/moscow"><img src="http://localhost:8081/images/moscow.jpg"/></a></button></th>
+        <th><button style="border:none; background-color: transparent;" class="zoom"><a href="http://localhost:8080/weather/new%20york"><img src="http://localhost:8081/images/newyork2.png"/></a></button></th>
+        <th><button style="border:none; background-color: transparent;" class="zoom"><a href="http://localhost:8080/weather/tokyo"><img src="http://localhost:8081/images/tokio2.png"/></a></button></th>
+        <th><button style="border:none; background-color: transparent;" class="zoom"><a href="http://localhost:8080/weather/moscow"><img src="http://localhost:8081/images/moscow.png"/></a></button></th>
     </tr>
 </table>
 </div>

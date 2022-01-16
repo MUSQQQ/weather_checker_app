@@ -30,3 +30,9 @@ type WeatherTemplateData struct {
 type OopsTemplateData struct {
 	RedirectURL string
 }
+
+type MongoDBCoordinates struct {
+	Name string `json:name`
+	Lat  string `json:lat`
+	Lon  string `json:lon`
+}
