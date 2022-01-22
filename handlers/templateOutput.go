@@ -18,7 +18,6 @@ func WeatherPageHandler(ctx *fasthttp.RequestCtx) {
 
 	resp, err := http.Get(fmt.Sprintf(internalWeatherJSONEndpoint, ctx.UserValue("cityname")))
 	if err != nil {
-		ctx.Response.SetStatusCode(500)
 		ctx.Response.SetStatusCode(http.StatusInternalServerError)
 		return
 	}

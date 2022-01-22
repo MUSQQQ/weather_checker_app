@@ -6,16 +6,9 @@ import (
 	"log"
 	"math"
 	"strconv"
-	"strings"
-	"time"
 	"weather_checker/models"
 
-	"context"
-
 	"github.com/valyala/fasthttp"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // "/coordinates/:cityname"
@@ -42,41 +35,29 @@ func CoordinatesHandler(ctx *fasthttp.RequestCtx) {
 	ctx.Response.SetBody(resp)
 }
 
-func getCoordinates(searchText string) (lat, lon string, status int, err error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
-	if err != nil {
-		fmt.Println("mongo.Connect() ERROR:", err)
+func getCoordinates(searchText string) (longt, latt string, status int, err error) {
+	lat, lon, err := models.GetCoordinates(searchText)
+	if err == nil && lat != "" && lon != "" {
+		return lat, lon, 200, nil
 	}
-	defer func() {
-		if err = client.Disconnect(ctx); err != nil {
-			panic(err)
-		}
-	}()
-	collection := client.Database("weather").Collection("cities")
-	name := strings.ToLower(strings.Replace(searchText, "%20", "", -1))
-	filter := bson.D{{"name", name}}
-	result := models.MongoDBCoordinates{}
-	err = collection.FindOne(ctx, filter).Decode(&result)
-	if err == nil {
-		return result.Lon, result.Lat, 200, nil
-	}
+	err = nil
 
 	var geocodingRequest []byte
 	URI := geocodeURL + searchText
 	status, geocodingRequest, err = fasthttp.Get(geocodingRequest, URI)
 	if err != nil {
 		log.Printf("error while requesting coordinates from geocoding")
+		log.Println(string(geocodingRequest))
 		return "", "", status, err
 	}
 	if status >= 500 {
 		log.Printf("geocode service unvailable")
+		log.Println(string(geocodingRequest))
 		return "", "", status, nil
 	}
 	if status != 200 {
 		log.Printf("status not OK in geocoding response:")
-		log.Printf(string(geocodingRequest))
+		log.Println(string(geocodingRequest))
 		return "", "", status, nil
 	}
 
@@ -88,16 +69,12 @@ func getCoordinates(searchText string) (lat, lon string, status int, err error) 
 		return "", "", status, err
 	}
 
-	longt := string(unmarshaledMap["longt"][1:])
-	latt := string(unmarshaledMap["latt"][1:])
+	longt = string(unmarshaledMap["longt"][1:])
+	latt = string(unmarshaledMap["latt"][1:])
 	longt = longt[:len(longt)-1]
 	latt = latt[:len(latt)-1]
 
-	toInsert := models.MongoDBCoordinates{Name: name, Lat: latt, Lon: longt}
-	_, err = collection.InsertOne(ctx, toInsert)
-	if err != nil {
-		log.Print(err.Error())
-	}
+	models.SaveCoordinates(searchText, latt, longt)
 
 	return longt, latt, 200, nil
 }

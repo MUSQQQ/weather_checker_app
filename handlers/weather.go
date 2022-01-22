@@ -19,12 +19,14 @@ func MainWeatherHandler(ctx *fasthttp.RequestCtx) {
 	longt, latt, status, err := getCoordinates(fmt.Sprintf("%s", ctx.UserValue("cityname")))
 	if err != nil || status >= 500 || latt == "" && longt == "" {
 		ctx.Response.SetStatusCode(http.StatusInternalServerError)
+		log.Println(err)
 		return
 	}
 
 	temp, pressure, humidity, clouds, currentTime, sunrise, sunset, offset, status, err := getWeatherData(latt, longt)
 	if err != nil || status != 200 {
 		ctx.Response.SetStatusCode(http.StatusInternalServerError)
+		log.Println(err)
 		return
 	}
 
@@ -67,6 +69,7 @@ func getWeatherData(lat string, lon string) (temp, pressure, humidity, clouds fl
 	}
 	if status != 200 {
 		log.Printf("openweather service unvailable or wrong request")
+		log.Print(string(openWeatherRequest))
 		return 0, 0, 0, 0, 0, 0, 0, 0, status, nil
 	}
 	unmarshaledMap1 := make(map[string]json.RawMessage)
