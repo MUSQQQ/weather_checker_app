@@ -175,6 +175,15 @@ func timestampToString(timestamp, offset int64) (result string) {
 	year, month, day := time.Unix(timestamp, 0).UTC().Add(time.Duration(offset) * time.Second).Date()
 	hour, minute, _ := time.Unix(timestamp, 0).UTC().Add(time.Duration(offset) * time.Second).Clock()
 
-	result = fmt.Sprintf("%d:%d:%d\n%d:%d", year, month, day, hour, minute)
+	possibleOneDigit := []int{int(month), day, hour, minute}
+	finalDoubleDigitResult := []string{"", "", "", ""}
+	for i := 0; i < 4; i++ {
+		if possibleOneDigit[i]/10 == 0 {
+			finalDoubleDigitResult[i] = fmt.Sprintf("0%d", possibleOneDigit[i])
+		} else {
+			finalDoubleDigitResult[i] = fmt.Sprintf("%d", possibleOneDigit[i])
+		}
+	}
+	result = fmt.Sprintf("%d:%s:%s\n%s:%s", year, finalDoubleDigitResult[0], finalDoubleDigitResult[1], finalDoubleDigitResult[2], finalDoubleDigitResult[3])
 	return result
 }
