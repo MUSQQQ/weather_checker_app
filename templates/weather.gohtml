@@ -39,6 +39,12 @@ img {
   transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
 }
 
+table
+{
+    border-collapse:separate;
+    border-spacing:5px 5px;
+}
+
 </style>
 <body>
 {{$name:=.Name}}
@@ -51,33 +57,33 @@ img {
     {{$sunset:=.Sunset}}
 
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
-  <div class="w3-display-topleft w3-padding-large w3-xlarge">
+  <div class="w3-display-topleft w3-padding-large w3-medium">
     <a href="/">Home</a>
   </div>
-  <div class="w3-display-middle">
-    <h1 style="text-align: center; font-size: 100px;">{{$temperature}}&#176;C</h1>
+  <div class="w3-display-topmiddle" style="margin-top:4%">
+    <h1 class="w3-jumbo w3-animate-top w3-center">{{$temperature}}&#176;C</h1>
     <hr class="w3-border-grey" style="margin:auto;width:60%">
-    <p class="w3-large w3-center"><font size="+3">{{$name}}</font></p>
-    <table cellpadding="20">
+    <p class="w3-large w3-center" style="margin-top:5px">{{$name}}</p>
+    <table cellpadding="10" style="margin-top:5px">
         <tr>
-            <th>Overall</th>
-            <th>Date and Time</th>
-            <th>Pressure</th>
-            <th>Humidity</th>
-            <th>Sunrise</th>
-            <th>Sunset</th>
+            <th><font size="-1">Overall</font></th>
+            <th><font size="-1">Date and Time</font></th>
+            <th><font size="-1">Pressure</font></th>
+            <th><font size="-1">Humidity</font></th>
+            <th><font size="-1">Sunrise</font></th>
+            <th><font size="-1">Sunset</font></th>
         </tr>
         <tr>
-            <th>{{$overall}}</th>
-            <th>{{$time}}</th>
-            <th>{{$pressure}} hPa</th>
-            <th>{{$humidity}}%</th>
-            <th>{{$sunrise}}</th>
-            <th>{{$sunset}}</th>
+            <th><font size="-1">{{$overall}}</font></th>
+            <th><font size="-1">{{$time}}</font></th>
+            <th><font size="-1">{{$pressure}} hPa</font></th>
+            <th><font size="-1">{{$humidity}}%</font></th>
+            <th><font size="-1">{{$sunrise}}</font></th>
+            <th><font size="-1">{{$sunset}}</font></th>
         </tr>
     </table>
   </div>
-  <div class="w3-display-bottomleft w3-padding-large">
+  <div class="w3-display-bottomleft w3-padding-medium w3-small">
     Powered by <a href="https://geocode.xyz">geocode.xyz</a> and <a href="https://openweathermap.org">openweathermap.org</a>
   </div>
 
