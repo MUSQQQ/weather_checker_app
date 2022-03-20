@@ -1,65 +1,15 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
-	"html/template"
-	"io/ioutil"
-	"net/http"
-	"strings"
+	"log"
+	"math"
+	"strconv"
 	"time"
 	"weather_checker/models"
-
-	"github.com/valyala/fasthttp"
 )
 
-// "/weather/:cityname"
-func WeatherPageHandler(ctx *fasthttp.RequestCtx) {
-
-	resp, err := http.Get(fmt.Sprintf(internalWeatherJSONEndpoint, ctx.UserValue("cityname")))
-	if err != nil {
-		ctx.Response.SetStatusCode(http.StatusInternalServerError)
-		return
-	}
-	if resp.StatusCode != 200 {
-		oopsData := models.OopsTemplateData{
-			RedirectURL: fmt.Sprintf("/weather/%s", ctx.UserValue("cityname")),
-		}
-		tpl := template.Must(template.ParseFiles("templates/oops.gohtml"))
-		ctx.SetContentType("text/html")
-		tpl.Execute(ctx, oopsData)
-		return
-	}
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		ctx.Response.SetStatusCode(http.StatusInternalServerError)
-		return
-	}
-	bodyStr := models.Weather{}
-	err = json.Unmarshal(body, &bodyStr)
-	if err != nil {
-		ctx.Response.SetStatusCode(http.StatusInternalServerError)
-		return
-	}
-
-	name := strings.ToUpper(strings.Replace(fmt.Sprintf("%s", ctx.UserValue("cityname")), "%20", " ", -1))
-
-	templateData := models.WeatherTemplateData{
-		Name:        name,
-		Overall:     determineOverall(bodyStr),
-		Temperature: int64(bodyStr.Temperature),
-		Time:        timestampToString(bodyStr.CurrentTime, bodyStr.TimeOffset),
-		Pressure:    bodyStr.Pressure,
-		Humidity:    bodyStr.Humidity,
-		Sunrise:     strings.Split(timestampToString(bodyStr.Sunrise, bodyStr.TimeOffset), "\n")[1],
-		Sunset:      strings.Split(timestampToString(bodyStr.Sunset, bodyStr.TimeOffset), "\n")[1],
-	}
-	tpl := template.Must(template.ParseFiles("templates/weather.gohtml"))
-	ctx.SetContentType("text/html")
-	tpl.Execute(ctx, templateData)
-}
-
-func determineOverall(data models.Weather) (overall string) {
+func determineOverall(data *models.Weather) (overall string) {
 	switch {
 	case data.Temperature < 0.0:
 		{
@@ -186,4 +136,39 @@ func timestampToString(timestamp, offset int64) (result string) {
 	}
 	result = fmt.Sprintf("%d:%s:%s\n%s:%s", year, finalDoubleDigitResult[0], finalDoubleDigitResult[1], finalDoubleDigitResult[2], finalDoubleDigitResult[3])
 	return result
+}
+
+func byteArrayToFloat(bytes []byte) (result float32, err error) {
+	strByte := string(bytes)
+	fmt.Println(strByte)
+	var i int
+	for i = 0; i < len(strByte); i++ {
+		if strByte[i] == '.' {
+			break
+		}
+	}
+
+	var intResultPart int
+
+	intResultPart, err = strconv.Atoi(strByte[0:i])
+
+	if err != nil {
+		log.Printf("error while converting: %s", err)
+		return -1, err
+	}
+
+	var mantissaPart int
+	if i >= len(strByte)-1 {
+		mantissaPart = 0
+
+	} else {
+		mantissaPart, err = strconv.Atoi(strByte[i+1:])
+	}
+
+	if err != nil {
+		log.Printf("error while converting: %s", err)
+		return -1, err
+	}
+	result = float32(intResultPart) + float32(mantissaPart)/(float32(math.Pow10(len(strByte)-i-1)))
+	return result, nil
 }

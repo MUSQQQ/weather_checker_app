@@ -3,12 +3,10 @@ package handlers
 import (
 	"html/template"
 
+	"weather_checker/models"
+
 	"github.com/valyala/fasthttp"
 )
-
-type aboutData struct {
-	Back string
-}
 
 func MainPageHandler(ctx *fasthttp.RequestCtx) {
 	tpl := template.Must(template.ParseFiles("templates/index.gohtml"))
@@ -19,6 +17,8 @@ func MainPageHandler(ctx *fasthttp.RequestCtx) {
 func AboutPageHandler(ctx *fasthttp.RequestCtx) {
 	tpl := template.Must(template.ParseFiles("templates/about.gohtml"))
 	ctx.SetContentType("text/html")
-	ad := aboutData{"Home"}
+	ad := models.AboutData{
+		Back: "Home",
+	}
 	tpl.Execute(ctx, ad)
 }
